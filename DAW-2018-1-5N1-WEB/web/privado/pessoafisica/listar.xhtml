@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">Listagem de Pessoas Fisicas</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="FormListagem" prependId="false">
+                <p:growl/>
+                <p:commandButton value="Novo" actionListener="#{controlepessoafisica.novo()}"
+                                 icon="ui-icon-plus" oncomplete="PF('dlg').show();"
+                                 update="FormEdicao" process="@this"/>
+                <h1 align="center">Listagem de Pessoas Fisicas</h1>
+                <div align="center">
+                    <p:panelGrid columns="11">
+                        <p:outputLabel value="Ordem"/>
+                        <p:selectOneMenu value="#{controlepessoafisica.daoPessoaFisica.ordem}">
+                            <f:selectItem itemLabel="ID" itemValue="id"/>
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <f:selectItem itemLabel="CPF" itemValue="cpf"/>
+                            <f:selectItem itemLabel="RG" itemValue="rg"/>
+                            <f:selectItem itemLabel="NASCIMENTO" itemValue="nascimento"/>
+                            <f:selectItem itemLabel="TELEFONE" itemValue="telefone"/>
+                            <f:selectItem itemLabel="EMAIL" itemValue="email"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Filtrar:"/>
+                        <p:inputText value="#{controlepessoafisica.daoPessoaFisica.filtro}" size="15">
+                            <p:ajax update="listagem" event="keyup"/>
+                        </p:inputText>
+                        <p:commandButton value="Filtrar" update="listagem" icon="ui-icon-search"/>
+                        <p:outputLabel value="Máximo Objetos"/>
+                        <p:inputNumber value="#{controlepessoafisica.daoPessoaFisica.maximoObjetos}" decimalPlaces="0" decimalSeparator="" thousandSeparator=""/>
+                        <p:commandButton value="Primeiro" actionListener="#{controlepessoafisica.daoPessoaFisica.primeiro()}"
+                                         icon="ui-icon-seek-first" update="listagem"/>
+                        <p:commandButton value="Anterior" actionListener="#{controlepessoafisica.daoPessoaFisica.anterior()}"
+                                         icon="ui-icon-seek-prev" update="listagem"/>
+                        <p:commandButton value="Proximo" actionListener="#{controlepessoafisica.daoPessoaFisica.proximo()}"
+                                         icon="ui-icon-seek-next" update="listagem"/>
+                        <p:commandButton value="Ultimo" actionListener="#{controlepessoafisica.daoPessoaFisica.ultimo()}"
+                                         icon="ui-icon-seek-end" update="listagem"/>
+                    </p:panelGrid>
+                </div>
+                <p:dataTable value="#{controlepessoafisica.daoPessoaFisica.listaObjetos}" var="obj" id="listagem">
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{controlepessoafisica.daoPessoaFisica.mensagemNavegacao}"/>
+                    </f:facet>
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{obj.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{obj.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="CPF">
+                        <p:outputLabel value="#{obj.cpf}"/>
+                    </p:column>
+
+                    <p:column headerText="RG">
+                        <p:outputLabel value="#{obj.rg}"/>
+                    </p:column>
+
+                    <p:column headerText="Nascimento">
+                        <p:outputLabel value="#{obj.nascimento}">
+                            <f:converter converterId="converterCalendar"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="EMAIL">
+                        <p:outputLabel value="#{obj.email}"/>
+                    </p:column>
+                    <p:column headerText="TELEFONE">
+                        <p:outputLabel value="#{obj.telefone}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton actionListener="#{controlepessoafisica.editar(obj.id)}" 
+                                             icon="ui-icon-pencil" title="Editar" 
+                                             oncomplete="PF('dlg').show();"  update="FormEdicao" process="@this"/>
+                            
+                            <p:commandButton actionListener="#{controlepessoafisica.remover(obj.id)}" 
+                                             icon="ui-icon-trash" title="Remover"
+                                             update="@form" process="@this"
+                                             onclick="if (!confirm('Confirma a exclusão?'))
+                                                         return false"/>
+                            <p:commandButton action="#{controlepessoafisica.imprimePessoa(obj.id)}" 
+                                             ajax="false"
+                                             icon="ui-icon-print" title="Imprimir Relatorio"
+                                             onclick="this.form.target='_blank';"
+                                            />
+                        </div>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+
+        <ui:define name="dialogos">
+            <p:dialog widgetVar="dlg" header="Edição Pessoa Fisica" modal="true" resizable="false" width="60%" height="380">
+                <h:form id="FormEdicao" prependId="false">
+                    <p:growl id="growl"/>
+                    <p:tabView id="tab" prependId="false">
+                        <p:tab title="Dados Pessoa Fisica">
+                            <div align="center">
+                                <p:panelGrid columns="2" >
+
+                                    <p:outputLabel value="ID"/>
+                                    <p:inputText value="#{controlepessoafisica.pessoafisica.id}" readonly="true" size="5"/>
+                                    <p:outputLabel value="Nome" for="txtNome"/>
+                                    <p:inputText id="txtNome" value="#{controlepessoafisica.pessoafisica.nome}" size="50" maxlength="50"
+                                                 placeholder="obrigatorio" />
+
+                                    <p:outputLabel value="Telefone" for="txtTELEFONE"/>
+                                    <p:inputMask id="txtTELEFONE" mask="(99)99999-9999" value="#{controlepessoafisica.pessoafisica.telefone}" 
+                                                 size="14" maxlength="14" placeholder="obrigatorio"/>
+                                    <p:outputLabel value="Email" for="txtEmail"/>
+                                    <p:inputText id="txtEmail" value="#{controlepessoafisica.pessoafisica.email}" size="30" maxlength="30"
+                                                 placeholder="obrigatorio" />
+                                    <p:outputLabel value="RG" for="txtRG"/>
+                                    <p:inputMask id="txtRG" mask="9999999999" value="#{controlepessoafisica.pessoafisica.rg}" size="10" maxlength="10"
+                                                 placeholder="obrigatorio"/>
+                                    <p:outputLabel value="CPF" for="txtCPF"/>
+                                    <p:inputMask id="txtCPF" mask="999.999.999-99" value="#{controlepessoafisica.pessoafisica.cpf}" size="14" maxlength="14" placeholder="obrigatorio"/>
+                                    <p:outputLabel value="Nascimento" for="txtNASCIMENTO"/>
+                                    <p:calendar id="txtNASCIMENTO" mask="true" pattern="dd/MM/yyyy" navigator="true" value="#{controlepessoafisica.pessoafisica.nascimento}" size="10" maxlength="10">
+                                        <f:converter converterId="converterCalendar"/>
+                                    </p:calendar>
+                                </p:panelGrid>
+                            </div>
+                        </p:tab>
+                        <p:tab title="Endereços">
+                            <h1 align="center">Listagem Endereços da Pessoa Fisica</h1>
+                            <p:dataTable value="#{controlepessoafisica.pessoafisica.endereços}" var="end"
+                                         rowIndexVar="idx" id="listaEnderecos">
+                                <f:facet name="header">
+                                    <p:commandButton value="Novo Endereço"
+                                                     actionListener="#{controlepessoafisica.novoEndereco()}"
+                                                     update="formEndereco" process="@this" icon="ui-icon-plus"
+                                                     oncomplete="PF('dlgEndereco').show();"/>
+                                </f:facet>
+                                <p:column headerText="NickName">
+                                    <p:outputLabel value="#{end.nickname}"/>
+                                </p:column>
+                                <p:column headerText="Endereço">
+                                    <p:outputLabel value="#{end.endereco}"/>
+                                </p:column>
+                                <p:column headerText="Numero">
+                                    <p:outputLabel value="#{end.numero}"/>
+                                </p:column>
+                                <p:column headerText="Cidade">
+                                    <p:outputLabel value="#{end.cidade.nome}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton icon="ui-icon-pencil"
+                                                         actionListener="#{controlepessoafisica.alterarEndereco(idx)}"
+                                                         update="formEndereco" process="@this"
+                                                         oncomplete="PF('dlgEndereco').show();"/>
+                                        <p:commandButton icon="ui-icon-trash"
+                                                         actionListener="#{controlepessoafisica.removerEndereco(idx)}"
+                                                         update="listaEnderecos growl" process="@this"
+                                                         onclick="if (!confirm('Confirma a exclusão do endereço?'))
+                                                                     return false"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Desejos">
+                            <p:dataTable value="#{controlepessoafisica.pessoafisica.desejos}"
+                                         var="des" rowIndexVar="idxDes" id="listaDesejos">
+                                <f:facet name="header">
+                                    <p:panelGrid columns="2">
+                                        <p:selectOneMenu value="#{controlepessoafisica.produto}"
+                                                         id="selectProduto" filter="true" filterMatchMode="starsWith">
+                                            <f:converter converterId="converterProduto"/>
+                                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                            <f:selectItems value="#{controlepessoafisica.daoProduto.listaTodos}"
+                                                           var="prod" itemLabel="#{prod.nome}"/>
+                                        </p:selectOneMenu>
+                                        <p:commandButton value="Adicionar" actionListener="#{controlepessoafisica.adicionarDesejo()}"
+                                                         update="listaDesejos growl"
+                                                         id="btnAdicionarDesejo" process="btnAdicionarDesejo selectProduto"
+                                                         icon="ui-icon-plus"/>
+                                    </p:panelGrid>
+                                </f:facet>
+                                <p:column headerText="Nome">
+                                    <p:outputLabel value="#{des.nome}"/>
+                                </p:column>
+                                <p:column headerText="Preço">
+                                    <p:outputLabel value="#{des.preco}"/>
+                                </p:column>
+                                <p:column headerText="QuantidadeEstoque">
+                                    <p:outputLabel value="#{des.quantidadeEstoque}"/>
+                                </p:column>
+                                <p:column headerText="Marca">
+                                    <p:outputLabel value="#{des.marca.nome}"/>
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <p:outputLabel value="#{des.descricao}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton id="btnRemoverDesejo"
+                                                         actionListener="#{controlepessoafisica.removerDesejo(idxDes)}"
+                                                         process="btnRemoverDesejo" update="listaDesejos growl"
+                                                         icon="ui-icon-trash"
+                                                         onclick="if (!confirm('Confirma a remoção do desejo?'))
+                                                                     return false"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                    <p:panel>
+                        <div align="center">
+                            <p:commandButton value="Salvar"
+                                             icon="ui-icon-disk"
+                                             actionListener="#{controlepessoafisica.salvar()}"
+                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"
+                                             update="FormEdicao FormListagem"
+                                             />   
+                        </div>
+                    </p:panel>
+
+                    <ui:include src="/templates/ajaxstatus.xhtml"/>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog widgetVar="dlgEndereco" header="Edição de Endereços" resizable="false"
+                      modal="true">
+                <h:form id="formEndereco" prependId="false">
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton value="Salvar" icon="ui-icon-disk"
+                                                 actionListener="#{controlepessoafisica.salvarEndereco()}"
+                                                 update="listaEnderecos formEndereco"
+                                                 process="@form"
+                                                 oncomplete="if(!args.validationFailed){PF('dlgEndereco').hide();}"/>
+                            </div>
+                        </f:facet>
+                        <p:outputLabel value="NickName" for="txtNickName"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.nickname}"
+                                     id="txtNickName" size="20" maxlength="20"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Endereço" for="txtEndereco"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.endereco}"
+                                     id="txtEndereco" size="50" maxlength="50"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Numero" for="txtNumero"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.numero}"
+                                     id="txtNumero" size="10" maxlength="10"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Complemento" for="txtComplemento"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.complemento}"
+                                     id="txtComplemento" size="20" maxlength="20"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="CEP" for="txtCEP"/>
+                        <p:inputMask value="#{controlepessoafisica.endereco.cep}"
+                                     id="txtCEP" mask="99999-999" size="9" maxlength="9"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Bairro" for="txtBairro"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.bairro}"
+                                     id="txtBairro" size="40" maxlength="40"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Referencia" for="txtReferencia"/>
+                        <p:inputText value="#{controlepessoafisica.endereco.referencia}"
+                                     id="txtReferencia" size="30" maxlength="30"
+                                     placeholder="obrigatório"/>
+                        <p:outputLabel value="Cidade" for="selectCidade"/>
+                        <p:selectOneMenu id="selectCidade" value="#{controlepessoafisica.endereco.cidade}"
+                                         filter="true" filterMatchMode="starsWith">
+                            <f:converter converterId="converterCidade"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{controlepessoafisica.daoCidade.listaTodos}"
+                                           var="c" itemLabel="#{c.nome}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+          
+          
+      xmlns:ifsul="http://xmlns.jcp.org/jsf/composite/ifsul">
+    
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">#{msgs['crud.animal.titulo']}</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem">
+                <h:panelGroup rendered="#{!controleAnimal.editando}">
+                    <h2>#{msgs['crud.nome.h2.bemvindo']}</h2>
+                    <p:messages/>
+                    <p:commandButton value="#{msgs['crud.novo']}" icon="ui-icon-plus" actionListener="#{controleAnimal.novo()}"
+                                     update="formListagem formEdicao"/>
+                    
+                    <p:dataTable value="#{controleAnimal.lista}" var="obj" reflow="true" >
+                        <p:column headerText="ID">
+                            <p:outputLabel value="#{obj.id}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.animal.nome']}">
+                            <p:outputLabel value="#{obj.nome}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.animal.raca']}">
+                            <p:outputLabel value="#{obj.raca}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.animal.cor']}">
+                            <p:outputLabel value="#{obj.cor}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.animal.descricao']}">
+                            <p:outputLabel value="#{obj.descricao}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.animal.peso']}">
+                            <p:outputLabel value="#{obj.peso}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs['crud.acoes']}">
+                            <div align="center">
+                                
+                                <p:commandButton actionListener="#{controleAnimal.alterar(obj)}" icon="ui-icon-pencil" process="@this" update="formEdicao formListagem"/>
+                                <ifsul:botaoRemover acao="#{controleAnimal.excluir(obj)}" process="@this" update="formListagem"/>
+                                
+                                
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                    <h2>#{msgs['crud.nome.h2.fim']}</h2>
+                </h:panelGroup>
+            </h:form>
+            <ui:include src="formulario.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>
+

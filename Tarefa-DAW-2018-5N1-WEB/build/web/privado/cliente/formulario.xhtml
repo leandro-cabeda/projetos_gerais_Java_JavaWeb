@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="../../index.xhtml">
+        <ui:define name="titulo">Edição de Clientes</ui:define>
+        <ui:define name="conteudo">
+            <div align="center">
+                <h:form>
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <f:facet name="header">
+                            <p:outputLabel value="Edição de Clientes"/>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton value="Cancelar"
+                                                 action="#{controlecliente.cancelar()}"
+                                                 ajax="false" immediate="true"/>
+
+                                <p:commandButton value="Salvar"
+                                                 icon="ui-icon-disk"
+                                                 action="#{controlecliente.salvar()}" ajax="false"
+                                                 />   
+                            </div>
+                        </f:facet>
+
+                        <p:outputLabel value="ID"/>
+                        <p:inputText value="#{controlecliente.cliente.id}" size="5" readonly="true"/> <!-- readonly deixando true fica somente leitura e não pode ser editado -->
+                        <p:outputLabel value="Nome" for="txtNome"/>
+                        <p:inputText value="#{controlecliente.cliente.nome}" id="txtNome" size="50" maxlength="50" placeholder="obrigatorio"/>
+                        <p:outputLabel value="CPF" for="txtCPF"/>
+                        <p:inputMask value="#{controlecliente.cliente.cpf}" mask="999.999.999-99" id="txtCPF" size="14" maxlength="14"/>
+                        <p:outputLabel value="RG" for="txtRG"/>
+                        <p:inputMask value="#{controlecliente.cliente.rg}"  mask="9999999999" id="txtRG" size="10" maxlength="10"/>
+                        <p:outputLabel value="TELEFONE" for="txtTELEFONE"/>
+                        <p:inputMask value="#{controlecliente.cliente.telefone}"  mask="(99)99999-9999" id="txtTELEFONE" size="14" maxlength="14"/>
+                        <p:outputLabel value="ENDERECO" for="txtENDERECO"/>
+                        <p:inputText value="#{controlecliente.cliente.endereco}" id="txtENDERECO" size="50" maxlength="50" placeholder="obrigatorio"/>
+                        <p:outputLabel value="CEP" for="txtCEP"/>
+                        <p:inputMask value="#{controlecliente.cliente.cep}"  mask="99999-999" id="txtCEP" size="9" maxlength="9"/>
+                        <p:outputLabel value="BAIRRO" for="txtBAIRRO"/>
+                        <p:inputText value="#{controlecliente.cliente.bairro}" id="txtBAIRRO" size="20" maxlength="20" placeholder="obrigatorio"/>
+
+                        <p:outputLabel value="Cidade" for="selectCidade"/>
+                        <p:selectOneMenu id="selectCidade" value="#{controlecliente.cliente.cidade}" filter="true" filterMatchMode="startsWith">
+                            <f:converter converterId="converterCidade"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{controlecidade.dao.lista}" var="c" itemLabel="#{c.nome}"/>
+                        </p:selectOneMenu>
+
+                    </p:panelGrid>
+
+                </h:form>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>
+

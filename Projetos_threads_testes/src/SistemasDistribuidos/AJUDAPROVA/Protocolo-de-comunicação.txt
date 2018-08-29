@@ -1,0 +1,71 @@
+Descrição geral:
+Protocolo de middleware de gerência de produtos distribuída. Cliente envia operações que o servidor responde com reultados.
+Para executar as operações, o cliente deve estar autenticado via login no servidor
+
+Lista de mensagens possíveis e seus significados:
+	LOGIN - cliente solicita autenticação com o servidor
+	LOGINREPLY - servidor responde LOGIN
+	LOGOUT - cliente solicita saída com o servidor
+	LOGOUTREPLY - servidor responde LOGOUT
+	CADASTRO - cliente envia um pedido de cadastro  
+	CADASTROREPLY - servidor responde pedido de CADASTRO 
+	PROCURA - cliente envia um pedido de procura
+	PROCURAREPLY - servidor responde pedido de PROCURA
+	REMOVE - cliente envia pedido de remoção
+	REMOVEREPLY - servidor responde pedido de REMOVE
+	SAIR - cliente solicita o fechamento da comunicação
+	SAIRREPLY - servidor responde sair
+
+Lista de código:
+	OK - operação completada com sucesso
+	ERRO - erro no servidor ao solicitar requisição
+	PARAMNULL - erro de parâmetros inválidos ou ausentes
+	REPETIDO - produto com mesmo código cadastrado
+
+Tipos possíveis:
+	Integer, String, Double
+
+Descrição das mensagens:
+LOGIN
+SEMCÓDIGO
+user: String
+pass: String
+
+LOGINREPLY
+OK, ERRO, PARAMNULL
+
+LOGOUT
+SEMCÓDIGO
+
+LOGOUTREPLY
+OK, ERRO, PARAMNULL
+
+SAIR
+SEMCÓDIGO
+
+SAIRREPLY
+OK, ERRO
+
+CADASTRO
+SEMCÓDIGO
+codigo: Iteger
+nome: String
+valor: Double
+
+CADASTROREPLY
+OK, ERRO, PARAMNULL, REPETIDO
+
+PROCURA
+SEMCÓDIGO
+codigo: Integer
+
+PROCURAREPLY
+OK, ERROR
+"produto" : Produto
+
+REMOVE
+SEMCÓDIGO
+codigo: integer
+
+REMOVEREPLY
+OK, ERRO, PARAMNULL

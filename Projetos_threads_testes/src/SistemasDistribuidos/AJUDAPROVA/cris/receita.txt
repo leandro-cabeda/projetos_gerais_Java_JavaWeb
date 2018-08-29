@@ -1,0 +1,9 @@
+As minhas respostas eram mais ou menos assim, o que muda é que no trataconexão tinha um case para cada operação.
+
+Tipo, recebeu PROCURA
+daí tinha um case para PROCURA
+
+Se recebeu CADASTRO
+daí tinha um case para CADASTRO
+
+Assim na hora de retornar retornava PROCURAREPLY ou CADASTROREPLY, que nem pedia no enunciado. 

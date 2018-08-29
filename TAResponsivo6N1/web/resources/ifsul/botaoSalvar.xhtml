@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <cc:interface>
+        <cc:attribute name="acao" required="true" method-signature="void action()"/>
+        <cc:attribute name="texto" required="true"/>
+        <cc:attribute name="process" required="false"/>
+        <cc:attribute name="update" required="false"/>
+    </cc:interface>
+    <cc:implementation>
+        <p:commandButton value="#{cc.attrs.texto}" actionListener="#{cc.attrs.acao}"
+                         update="#{cc.attrs.update}" process="#{cc.attrs.process}"
+                         icon="ui-icon-disk"/>
+    </cc:implementation>
+</html>
+

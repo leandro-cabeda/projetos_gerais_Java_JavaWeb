@@ -1,0 +1,20 @@
+
+
+A questão 2 era aquela do servidor.A 2 parte de dentro do case, então verificava se a mensagem era procurar produto, pegava o código do produto, chamava um metodo procurar produto, monta a mensagem procurar produtoreplay e envia de volta. Parecido com o trabalho, isso coloquei na 1 que era o protocolo. Fiz parecido com o arquivo trataconexão do trabalho.
+
+O metodo procurarproduto não incrementei, pois deveria estar em uma classe produto
+A 3 fiz em sequencia executando uma unica vez.
+
+Mensagem m = new Mensagem("ENTRARNOJOGO");
+            m.setParam("personagem", p);
+
+            output.writeObject(m);
+            output.flush();
+
+            m = (Mensagem) input.readObject();
+            System.out.println("Resposta: " + m);
+            p = ((Personagem)m.getParam("carta"));
+
+parecido com este trecho que estava no trabalho
+monta a mensagem, envia com output.write...
+com input.read pega o retorno e mostra com system.out.println ou showMwssagedialog

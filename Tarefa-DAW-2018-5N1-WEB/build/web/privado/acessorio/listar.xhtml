@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="../../index.xhtml">
+        <ui:define name="titulo">Listagem de Acessorios</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="FormListagem" prependId="false">
+                <p:growl/>
+                <p:commandButton value="Novo" actionListener="#{controleacessorio.novo()}"
+                                 icon="ui-icon-plus" oncomplete="PF('dlg').show();"
+                                 update="FormEdicao" process="@this"/>
+                <h1 align="center">Listagem de Acessorios </h1>
+                <div align="center">
+                    <p:panelGrid columns="11">
+                        <p:outputLabel value="Ordem"/>
+                        <p:selectOneMenu value="#{controleacessorio.daoAcessorio.ordem}">
+                            <f:selectItem itemLabel="ID" itemValue="id"/>
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Filtrar:"/>
+                        <p:inputText value="#{controleacessorio.daoAcessorio.filtro}" size="15">
+                            <p:ajax update="listagem" event="keyup"/>
+                        </p:inputText>
+                        <p:commandButton value="Filtrar" update="listagem" icon="ui-icon-search"/>
+                        <p:outputLabel value="Máximo Objetos"/>
+                        <p:inputNumber value="#{controleacessorio.daoAcessorio.maximoObjetos}" decimalPlaces="0" decimalSeparator="" thousandSeparator=""/>
+                        <p:commandButton value="Primeiro" actionListener="#{controleacessorio.daoAcessorio.primeiro()}"
+                                         icon="ui-icon-seek-first" update="listagem"/>
+                        <p:commandButton value="Anterior" actionListener="#{controleacessorio.daoAcessorio.anterior()}"
+                                         icon="ui-icon-seek-prev" update="listagem"/>
+                        <p:commandButton value="Proximo" actionListener="#{controleacessorio.daoAcessorio.proximo()}"
+                                         icon="ui-icon-seek-next" update="listagem"/>
+                        <p:commandButton value="Ultimo" actionListener="#{controleacessorio.daoAcessorio.ultimo()}"
+                                         icon="ui-icon-seek-mod" update="listagem"/>
+                    </p:panelGrid>
+                </div>
+                <p:dataTable value="#{controleacessorio.daoAcessorio.listaObjetos}" var="obj" id="listagem">
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{controleacessorio.daoAcessorio.mensagemNavegacao}"/>
+                    </f:facet>
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{obj.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{obj.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton actionListener="#{controleacessorio.editar(obj.id)}" 
+                                             icon="ui-icon-pencil" title="Editar" 
+                                             oncomplete="PF('dlg').show();"  update="FormEdicao" process="@this"/>
+                            <p:commandButton actionListener="#{controleacessorio.remover(obj.id)}" 
+                                             icon="ui-icon-trash" title="Remover"
+                                             update="@form" process="@this"
+                                             onclick="if (!confirm('Confirma a exclusão?'))
+                                                         return false"/>
+                        </div>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+
+        <ui:define name="dialogos">
+            <p:dialog widgetVar="dlg" header="Edição Acessorios" modal="true" resizable="false" width="60%" height="380">
+                <h:form id="FormEdicao" prependId="false">
+                    <p:growl id="growl"/>
+                    <p:tabView id="tab" prependId="false">
+                        <p:tab title="Dados Acessorios">
+                            <div align="center">
+                                <p:panelGrid columns="2" >
+
+                                    <p:outputLabel value="ID"/>
+                                    <p:inputText value="#{controleacessorio.acessorio.id}" readonly="true" size="5"/>
+
+                                    <p:outputLabel value="Nome" for="txtNome"/>
+                                    <p:inputText id="txtNome" value="#{controleacessorio.acessorio.nome}" size="25" maxlength="25"
+                                                 placeholder="obrigatorio" />
+
+
+                                </p:panelGrid>
+                            </div>
+                        </p:tab>
+
+                        <p:tab title="Modelos">
+                            <h1 align="center">Listagem Modelos</h1>
+                            <p:dataTable value="#{controlemodelo.daoModelo.listaObjetos}" var="mode"
+                                          id="listaModelos">
+                                <f:facet name="header">
+                                    <p:commandButton value="Novo Modelo"
+                                                     actionListener="#{controlemodelo.novo()}"
+                                                     update="formModelo" process="@this" icon="ui-icon-plus"
+                                                     oncomplete="PF('dlgModelos').show();"/>
+                                </f:facet>
+                                <p:column headerText="ID">
+                                    <p:outputLabel value="#{mode.id}"/>
+                                </p:column>
+                                <p:column headerText="Nome">
+                                    <p:outputLabel value="#{mode.nome}"/>
+                                </p:column>
+                                <p:column headerText="Fabricante">
+                                    <p:outputLabel value="#{mode.fabricante.nome}"/>
+                                </p:column>
+                                <p:column headerText="Grupo">
+                                    <p:outputLabel value="#{mode.grupo.nome}"/>
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton icon="ui-icon-pencil"
+                                                         actionListener="#{controlemodelo.editar(mode.id)}"
+                                                         update="formModelo" process="@this" title="Editar"
+                                                         oncomplete="PF('dlgModelos').show();"/>
+                                        <p:commandButton icon="ui-icon-trash"
+                                                         actionListener="#{controlemodelo.remover(mode.id)}"
+                                                         update="listaModelos growl" process="@this" title="Remover"
+                                                         onclick="if (!confirm('Confirma a exclusão do modelo?'))
+                                                                     return false"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+
+                        <p:tab title="Conjuntos">
+                            <p:dataTable value="#{controleacessorio.acessorio.grupos}"
+                                         var="grup" rowIndexVar="idxGr" id="listaConjuntos">
+                                <f:facet name="header">
+                                    <p:panelGrid columns="2">
+                                        <p:selectOneMenu value="#{controleacessorio.grupo}"
+                                                         id="selectGrupo">
+                                            <f:converter converterId="converterGrupo"/>
+                                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                                            <f:selectItems value="#{controleacessorio.daoGrupo.listaTodos}"
+                                                           var="gru" itemLabel="#{gru.nome}"/>
+                                        </p:selectOneMenu>
+                                        <p:commandButton value="Adicionar" actionListener="#{controleacessorio.adicionarGrupo()}"
+                                                         update="listaConjuntos growl"
+                                                         id="btnAdicionarConjuntos" process="btnAdicionarConjuntos selectGrupo"
+                                                         icon="ui-icon-plus"/>
+                                    </p:panelGrid>
+                                </f:facet>
+                                <p:column headerText="ID">
+                                    <p:outputLabel value="#{grup.id}"/>
+                                </p:column>
+                                <p:column headerText="Nome">
+                                    <p:outputLabel value="#{grup.nome}"/>
+                                </p:column>
+
+                                <p:column headerText="ValorDiaria">
+                                    <p:outputLabel value="#{grup.valordiaria}"/>
+                                </p:column>
+
+                                <p:column headerText="Ações">
+                                    <div align="center">
+                                        <p:commandButton id="btnRemoverConjuntos"
+                                                         actionListener="#{controleacessorio.removerGrupo(idxGr)}"
+                                                         process="btnRemoverConjuntos" update="listaConjuntos growl"
+                                                         icon="ui-icon-trash"
+                                                         onclick="if (!confirm('Confirma a remoção do conjunto?'))
+                                                                     return false"/>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                    <p:panel>
+                        <div align="center">
+                            <p:commandButton value="Salvar"
+                                             icon="ui-icon-disk"
+                                             actionListener="#{controleacessorio.salvar()}"
+                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"
+                                             update="FormEdicao FormListagem"
+                                             />   
+                        </div>
+                    </p:panel>
+
+                    <ui:include src="../../ajaxstatus.xhtml"/>
+                </h:form>
+            </p:dialog>
+            
+
+            <p:dialog widgetVar="dlgModelos" header="Edição de Modelos" resizable="false"
+                      modal="true">
+                <h:form id="formModelo" prependId="false">
+                    <p:growl/>
+                    <p:panelGrid columns="2">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p:commandButton value="Salvar" icon="ui-icon-disk"
+                                                 actionListener="#{controlemodelo.salvar()}"
+                                                 update="listaModelos formModelo"
+                                                 process="@form"
+                                                 oncomplete="if(!args.validationFailed){PF('dlgModelos').hide();}"/>
+                            </div>
+                        </f:facet>
+                        
+                        <p:outputLabel value="ID"/>
+                        <p:inputText value="#{controlemodelo.modelo.id}" readonly="true" size="5" />
+                        
+                        <p:outputLabel value="Nome" for="txtNOME"/>
+                        <p:inputText value="#{controlemodelo.modelo.nome}"
+                                     id="txtNOME" size="30" maxlength="30" placeholder="obrigatório"/>
+                        
+                        <p:outputLabel value="Grupo" for="selectGrupo"/>
+                        <p:selectOneMenu id="selectGrupo" value="#{controlemodelo.modelo.grupo}"
+                                         filter="true" filterMatchMode="starsWith">
+                            <f:converter converterId="converterGrupo"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{controlemodelo.daoGrupo.listaTodos}"
+                                           var="c" itemLabel="#{c.nome}"/>
+                        </p:selectOneMenu>
+                        
+                        
+                        <p:outputLabel value="Fabricante" for="selectFabricante"/>
+                        <p:selectOneMenu id="selectFabricante" value="#{controlemodelo.modelo.fabricante}"
+                                         filter="true" filterMatchMode="starsWith">
+                            <f:converter converterId="converterFabricante"/>
+                            <f:selectItem noSelectionOption="true" itemLabel="Selecione um registro"/>
+                            <f:selectItems value="#{controlemodelo.daoFabricante.lista}"
+                                           var="c" itemLabel="#{c.nome}"/>
+                        </p:selectOneMenu>
+                        
+                        
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

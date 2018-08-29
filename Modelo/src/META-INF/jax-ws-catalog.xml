@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://DESKTOP-FO14PNI:8080/Webservice/ServicesService?wsdl" uri="wsdl/DESKTOP-FO14PNI_8080/Webservice/ServicesService.wsdl"/>
+    <system systemId="http://DESKTOP-FO14PNI:8080/Webservice/ServicesService?xsd=1" uri="wsdl/DESKTOP-FO14PNI_8080/Webservice/ServicesService.xsd_1.xsd"/>
+</catalog>
